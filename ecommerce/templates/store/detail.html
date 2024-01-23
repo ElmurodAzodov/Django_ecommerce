@@ -52,6 +52,8 @@
                   <form action="{% url 'store:add-to-cart' %}">
                     <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
                     <button type="submit" class="btn btn-dark btn-lg btn-block h-100 d-flex align-items-center justify-content-center px-0">Add to Cart</button>
+                    <a href="{% url 'update_product' product.id %}" class="btn btn-sm btn-success mt-1 pl-5 pr-5">Update</a>
+                    <a href="{% url 'delete_product' product.id %}" class="btn btn-sm btn-danger mt-1 pl-5 pr-5">Delete</a>
                   </form>
 
                 </div>

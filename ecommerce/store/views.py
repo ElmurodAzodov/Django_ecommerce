@@ -8,9 +8,80 @@ from django.views import View
 import decimal
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator # for Class Based Views
-
+from .forms import *
 
 # Create your views here.
+
+# ==================================================
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import redirect
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from jewelryshop.usecases import testpermission
+
+
+
+from .forms import ProductForm
+from .models import Product
+
+
+# 1
+class ProductListView(ListView):
+    modal = Product
+    template_name = 'product.html'
+
+    def get_queryset(self):
+        return Product.objects.all()
+
+# 2
+class AddProductView(CreateView):
+    modal = Product
+    form_class = ProductForm
+    template_name = 'add_product.html'
+    success_url = '/product/'
+    
+    
+
+    def post(self, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.author = self.request.user
+            product.save()
+        return redirect('products_view')
+# 3 
+class ProductDetailsView(DetailView):
+    modal = Product
+    template_name = 'product_details.html'
+
+    def get_queryset(self):
+        return Product.objects.filter(id=self.kwargs['pk']) 
+    
+    
+# 4  
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'update_product.html'
+    success_url = '/categories/'
+    permission_required = 'store.change_product'
+
+    def get_queryset(self):
+        return Product.objects.filter(id=self.kwargs['pk'])
+
+@login_required
+@user_passes_test(testpermission, login_url='products_view')
+def delete_product(request, product_id: int):
+    product = Product.objects.get(id=product_id)
+    product.delete()
+    messages.success(request, 'Product deleted successfully!')
+    return redirect('products_view')
+
+
+
+# ==================================================
 
 def home(request):
     categories = Category.objects.filter(is_active=True, is_featured=True)[:3]

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% load static %}
+
+{% block title %}
+  <title>Add a product</title>
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block link %}
+{% endblock %}
+
+{% block content %}
+    <h1 class="ml-5">Add a new watch</h1>
+    {% include "form_snippets.html" with form=form %}
+
+{% endblock %}
+
+{% block script %}
+{% endblock %}

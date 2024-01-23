@@ -10,6 +10,7 @@ from django.forms import widgets
 from django.forms.fields import CharField
 from django.utils.translation import gettext, gettext_lazy as _
 
+from .models import Product, Category
 
 
 class RegistrationForm(UserCreationForm):
@@ -49,4 +50,23 @@ class PasswordResetForm(PasswordResetForm):
 class SetPasswordForm(SetPasswordForm):
     new_password1 = forms.CharField(label=_("New Password"), strip=False, widget=forms.PasswordInput(attrs={'autocomplete':'new-password', 'class':'form-control'}), help_text=password_validation.password_validators_help_text_html())
     new_password2 = forms.CharField(label=_("Confirm Password"), strip=False, widget=forms.PasswordInput(attrs={'autocomplete':'new-password','class':'form-control'}))
+
+
+class ProductForm(forms.ModelForm):
+    title = forms.CharField(max_length=255, label="Product title", help_text="")
+    sku = forms.CharField(max_length=50, label="SKU", help_text="Stock Keeping Unit")
+    slug = forms.SlugField(max_length=160, label="Product Slug", help_text="Product Slug (URL-friendly version)")
+    short_description = forms.CharField(max_length=255, label="Description", help_text="Please enter description", widget=forms.Textarea(attrs={'rows': 3, 'cols': 50}))
+    product_image = forms.ImageField(required=False, label="Product Image", help_text="Please upload product image")
+    price = forms.DecimalField(max_digits=5, decimal_places=2, label="Price", help_text="Please enter price")
+    category = forms.ModelChoiceField(queryset=Category.objects.all(), label="Category", help_text="Product category")
+    is_active = forms.BooleanField(initial=None, label="Is Active", help_text="Is the product active?")
+    is_featured = forms.BooleanField(initial=None, label="Is Featured", help_text="Is the product featured?")
+    
+
+    
+    class Meta:
+        model = Product
+        fields = ['title','sku','slug', 'short_description', 'product_image', 'price', 'category', 'is_active', 'is_featured' ]
+
 

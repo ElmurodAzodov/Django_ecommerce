@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %}
+  <title>Products</title>
+{% endblock %}
+
+
+{% block content %}
+
+  <h1>Products</h1>
+
+  <div>
+    <div class="all-products">
+      {% if object_list %}
+        {% for product in object_list %}
+          <div class="product">
+            <div class="product-header">
+              <small class="text-secondary">Created at: {{ product.created|date:'d-m-Y' }}</small>
+              <p class="product-cost">$ {{ product.price }}</p>
+            </div>
+            <hr />
+            <h3>{{ product.title }}</h3>
+            <img src="{{ product.product_image.url }}" alt="{{ product.title }}" />
+            <p>{{ product.short_description }}</p>
+
+            {% comment %}we update it if only current user is creator of book{% endcomment %}
+            {% comment %} {% if book.creator == request.user %}
+              {% endcomment %}
+              <div class="product-footer">
+                <hr />
+
+                {% if product.category.id == request.user.id %}
+                  <a href="{% url 'book_details' product.id %}" class="btn btn-sm col-sm-4 btn-outline-success">View</a>
+                  <a href="{% url 'update_book' product.id %}" class="btn btn-sm col-sm-4 btn-outline-primary">Update</a>
+                  <a href="{% url 'delete_book' product.id %}" class="btn btn-sm col-sm-4 btn-outline-danger">Delete</a>
+                {% else %}
+                  <a href="{% url 'book_details' product.id %}" 
+                    class="btn btn-sm col-sm-6 btn-info">
+                    View
+                  </a>
+                  <a href="{% url 'add_to_wishlist' book.id %}" 
+                    class="btn btn-sm col-sm-6 btn-success">
+                    Add to wishlist
+                  </a>
+                {% endif %}
+              </div>
+              {% comment %}
+            {% endif %} {% endcomment %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No products found</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}
