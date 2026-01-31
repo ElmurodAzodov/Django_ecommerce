@@ -72,6 +72,7 @@ class ProductUpdateView(UpdateView):
         return Product.objects.filter(id=self.kwargs['pk'])
 
 @login_required
+
 @user_passes_test(testpermission, login_url='products_view')
 def delete_product(request, product_id: int):
     product = Product.objects.get(id=product_id)

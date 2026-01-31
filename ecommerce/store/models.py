@@ -27,7 +27,7 @@ class Category(models.Model):
         verbose_name_plural = 'Categories'
         ordering = ('-created_at', )
 
-    def __str__(self):
+    def __str__(self): 
         return self.title
 
 
